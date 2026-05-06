@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<!-- ビューポート設定あり（ダメUI版でもスマホで見られるようにする） -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>★☆★ SUPER URANAI ★☆★ あなたの運命を解き明かす！！！</title>
+<style>
+/*
+  ========================================
+  教育用「ダメなUI/UX」サンプル
+  ノーマン6要素を意図的に壊しています
+  
+  【講師用メモ】各問題点にHTMLコメントで
+  壊している要素を記載しています
+  Ctrl+U（ソース表示）で確認できます
+  ========================================
+*/
+
+/* [概念モデルの破壊] 占星術アプリなのに90年代のジオシティーズ風 */
+body {
+  font-family: 'Comic Sans MS', 'Papyrus', cursive, fantasy;
+  background: #ff00ff;
+  background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><text x="10" y="40" font-size="30" opacity="0.15">★</text></svg>');
+  color: #00ff00;
+  margin: 0;
+  padding: 0;
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="24" font-size="24">🔮</text></svg>') 16 16, auto;
+}
+
+/* [シグニファイアの矛盾] リンクに見えるがリンクではないテキスト */
+.fake-link {
+  color: blue;
+  text-decoration: underline;
+  cursor: default;
+}
+
+/* [アフォーダンスの破壊] ボタンに見えない実際のボタン */
+.hidden-button {
+  background: none;
+  border: none;
+  color: #00ff00;
+  font-size: 11px;
+  cursor: default;
+  padding: 2px;
+  font-family: inherit;
+}
+.hidden-button:hover {
+  /* ホバーしても何も変わらない = フィードバックの欠如 */
+}
+
+/* [シグニファイアの矛盾] ボタンに見えるが何もしないもの */
+.fake-button {
+  display: inline-block;
+  background: linear-gradient(to bottom, #ffcc00, #ff6600);
+  color: #fff;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  border: 2px solid #fff;
+  margin: 8px;
+}
+
+/* 本物のボタン（でもボタンに見えない） */
+.real-button {
+  background: transparent;
+  border: 1px dotted #999;
+  color: #666;
+  font-size: 10px;
+  padding: 3px 6px;
+  cursor: text;
+  font-family: 'Times New Roman', serif;
+}
+
+header {
+  background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+  padding: 20px;
+  text-align: center;
+  border-bottom: 8px dashed #ffff00;
+}
+header h1 {
+  font-size: 42px;
+  color: #fff;
+  text-shadow: 3px 3px 0 #000, -1px -1px 0 #000;
+  /* [概念モデルの破壊] 占星術のイメージと合わないデザイン */
+}
+/* [マッピングの崩壊] marqueeスタイルのスクロールテキスト */
+.marquee-text {
+  color: #ffff00;
+  font-size: 20px;
+  font-weight: bold;
+  animation: marquee 8s linear infinite;
+  white-space: nowrap;
+  overflow: hidden;
+}
+@keyframes marquee {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+/* フォーム */
+.input-section {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+}
+.form-card {
+  /* [概念モデルの破壊] フォームが表のように見える */
+  background: #000080;
+  border: 5px ridge #c0c0c0;
+  padding: 20px;
+}
+
+/* [マッピングの崩壊] ラベルと入力欄が離れている・順序がおかしい */
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 14px;
+  color: #ffff00;
+  margin-bottom: 2px;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+  border: 2px inset #c0c0c0;
+  background: #fff;
+  color: #000;
+}
+
+/* [フィードバックの欠如] 入力フォーカスで何も変わらない */
+.form-group input:focus {
+  outline: none;
+  /* 通常はborder-colorが変わるべき */
+}
+
+/* 結果エリア */
+#results { display: none; }
+.results-wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* [マッピングの崩壊] 結果の配置がバラバラ */
+.result-header {
+  text-align: left; /* 中央揃えが自然なのに左寄せ */
+  margin-bottom: 20px;
+  border: 3px double #00ff00;
+  padding: 10px;
+  background: #000;
+}
+
+/* [シグニファイアの矛盾] 重要な情報が目立たない — ただし読めはする */
+.summary-card {
+  background: #111;
+  border: 1px solid #333;
+  padding: 16px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  color: #ccc;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+  line-height: 1.7;
+}
+
+/* 3つの核 */
+.three-cores {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.core-card {
+  background: #000;
+  border: 2px solid;
+  padding: 16px;
+  /* [シグニファイアの矛盾] 3枚のカードが全部違う色で意味が不明 */
+}
+.core-card:nth-child(1) { border-color: #ff0000; background: #330000; }
+.core-card:nth-child(2) { border-color: #00ff00; background: #003300; }
+.core-card:nth-child(3) { border-color: #0000ff; background: #000033; }
+.core-card .core-label {
+  font-size: 10px;
+  color: #888;
+}
+.core-card .core-sign {
+  font-size: 18px;
+  color: #fff;
+  font-weight: bold;
+}
+.core-card .core-desc {
+  font-size: 15px;
+  color: #ccc;
+  line-height: 1.6;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+}
+
+/* チャートエリア */
+.chart-section {
+  margin-bottom: 24px;
+}
+.chart-container {
+  background: #000;
+  border: 3px ridge #c0c0c0;
+  padding: 16px;
+  text-align: center;
+}
+.chart-container h3 {
+  color: #ff00ff;
+  font-size: 16px;
+}
+
+/* 惑星リスト */
+.planet-list {
+  background: #000;
+  border: 3px ridge #c0c0c0;
+  padding: 16px;
+  margin-top: 16px;
+}
+.planet-list h3 {
+  color: #ff00ff;
+  font-size: 16px;
+}
+/* [マッピングの崩壊] 惑星リストの列が不揃い */
+.planet-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dotted #333;
+  font-size: 16px;
+  color: #ddd;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+}
+
+/* 元素バランス */
+.element-section {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+/* [シグニファイアの矛盾] 火水風土の色が全部同じ */
+.element-card {
+  background: #222;
+  border: 1px solid #444;
+  padding: 12px;
+  text-align: center;
+  color: #ccc;
+  border-radius: 0;
+}
+.element-card .el-name { font-size: 14px; }
+.element-card .el-count { font-size: 24px; font-weight: bold; color: #ccc; }
+.element-card .el-planets { font-size: 11px; color: #666; }
+
+/* アスペクト */
+.aspect-section {
+  background: #000;
+  border: 3px ridge #c0c0c0;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+.aspect-section h3 { color: #ff00ff; }
+.aspect-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border-bottom: 1px dotted #333;
+  font-size: 15px;
+  color: #ddd;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+}
+
+/* ハウス */
+.house-section {
+  background: #000;
+  border: 3px ridge #c0c0c0;
+  padding: 16px;
+  margin-bottom: 24px;
+}
+.house-section h3 { color: #ff00ff; }
+.house-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.house-item {
+  padding: 8px;
+  background: #111;
+  font-size: 13px;
+  color: #0f0;
+}
+.house-item .house-num { color: #ff0; font-weight: bold; }
+.house-item .house-theme { display: block; font-size: 11px; color: #666; margin-top: 2px; }
+
+/* 解釈セクション — ダメUIでも結果テキストは読めるようにする */
+.reading-section {
+  background: #111;
+  border: 3px ridge #c0c0c0;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.reading-section h3 { color: #ff00ff; font-size: 16px; }
+.reading-section h4 { color: #ffff00; font-size: 14px; margin: 12px 0 4px; }
+.reading-section p { color: #ddd; font-size: 16px; line-height: 1.7; font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif; }
+
+/* ポップアップ（閉じにくい） */
+.annoying-popup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #ffff00;
+  color: #000;
+  padding: 40px;
+  border: 5px solid #ff0000;
+  z-index: 9999;
+  text-align: center;
+  font-size: 20px;
+  box-shadow: 0 0 100px rgba(0,0,0,0.8);
+  min-width: 400px;
+}
+/* [アフォーダンスの破壊] 閉じるボタンが極小で見つけにくい */
+.popup-close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 8px;
+  color: #ccc;
+  background: none;
+  border: none;
+  cursor: default;
+  padding: 1px;
+  line-height: 1;
+}
+
+/* 訪問者カウンター風 */
+.visitor-counter {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+  color: #ffff00;
+  background: #000;
+  border-top: 3px double #ff00ff;
+}
+
+/* スクロールトップボタン（でも下に行く） */
+.scroll-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #ff6600;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+  .three-cores { grid-template-columns: 1fr; }
+  .element-section { grid-template-columns: repeat(2, 1fr); }
+  .house-grid { grid-template-columns: repeat(2, 1fr); }
+  header h1 { font-size: 28px; }
+  .marquee-text { font-size: 16px; }
+  .form-card { padding: 16px; }
+  .input-section { padding: 12px; }
+  .results-wrap { padding: 12px; }
+  .annoying-popup { min-width: auto; width: 90%; padding: 24px; font-size: 16px; }
+  .fake-button { font-size: 14px; padding: 10px 20px; }
+  .chart-container svg { max-width: 100%; }
+}
+@media (max-width: 480px) {
+  header h1 { font-size: 22px; }
+  .element-section { grid-template-columns: 1fr 1fr; }
+  .house-grid { grid-template-columns: 1fr; }
+  .planet-row { font-size: 12px; }
+  .aspect-row { font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- [概念モデルの破壊] 占星術と関係ないヘッダー演出 -->
+<header>
+  <h1>★☆ SUPER URANAI ☆★</h1>
+  <div class="marquee-text">🌟 100万人が体験した奇跡の占い！ 今すぐあなたの運命を知ろう！ 🌟</div>
+  <!-- [シグニファイアの矛盾] リンクに見えるが何もしない -->
+  <p><span class="fake-link">English</span> | <span class="fake-link">中文</span> | <span class="fake-link">한국어</span></p>
+</header>
+
+<!-- [フィードバックの欠如] ページ読み込み時にポップアップ、閉じるボタンが極小 -->
+<div class="annoying-popup" id="popup1">
+  <p>🎉 おめでとうございます！🎉</p>
+  <p>あなたは<strong>今日の1000人目</strong>の訪問者です！</p>
+  <p>今なら特別鑑定が<span style="color:red;font-size:28px;">無料！</span></p>
+  <!-- [アフォーダンスの破壊] 閉じるボタンが見えない -->
+  <button class="popup-close" onclick="document.getElementById('popup1').style.display='none'">×</button>
+  <!-- [シグニファイアの矛盾] 目立つボタンだが何もしない -->
+  <div class="fake-button" onclick="void(0)">🎁 特別鑑定を受ける</div>
+</div>
+
+<section class="input-section">
+  <div class="form-card">
+    <h2 style="color:#ff00ff; text-align:center; font-size:24px;">✨ 生年月日を入力してね ✨</h2>
+    
+    <!-- [マッピングの崩壊] フォームの順序がおかしい（出生地→時刻→日付） -->
+    <!-- [制約の欠如] 入力値のバリデーションなし -->
+    <div class="form-group">
+      <label for="birthplace">出生地（都道府県） ← まずこれから！</label>
+      <select id="birthplace" style="width:100%;padding:8px;font-size:16px;border:2px inset #c0c0c0;background:#fff;color:#000;">
+        <option value="43.06,141.35">北海道（札幌）</option>
+        <option value="39.72,140.10">秋田県</option>
+        <option value="39.70,141.15">岩手県</option>
+        <option value="38.27,140.87">宮城県（仙台）</option>
+        <option value="38.24,140.34">山形県</option>
+        <option value="37.75,140.47">福島県</option>
+        <option value="36.34,140.45">茨城県</option>
+        <option value="36.57,139.88">栃木県</option>
+        <option value="36.39,139.06">群馬県</option>
+        <option value="35.86,139.65">埼玉県</option>
+        <option value="35.61,140.12">千葉県</option>
+        <option value="35.68,139.77" selected>東京都</option>
+        <option value="35.45,139.64">神奈川県（横浜）</option>
+        <option value="37.90,139.02">新潟県</option>
+        <option value="36.70,137.21">富山県</option>
+        <option value="36.59,136.63">石川県</option>
+        <option value="36.07,136.22">福井県</option>
+        <option value="35.66,138.57">山梨県</option>
+        <option value="36.23,137.97">長野県</option>
+        <option value="35.39,136.72">岐阜県</option>
+        <option value="34.98,138.38">静岡県</option>
+        <option value="35.18,136.91">愛知県（名古屋）</option>
+        <option value="34.73,136.51">三重県</option>
+        <option value="35.00,135.87">滋賀県</option>
+        <option value="35.02,135.76">京都府</option>
+        <option value="34.69,135.50">大阪府</option>
+        <option value="34.69,135.18">兵庫県（神戸）</option>
+        <option value="34.69,135.83">奈良県</option>
+        <option value="34.23,135.17">和歌山県</option>
+        <option value="35.50,134.24">鳥取県</option>
+        <option value="35.47,133.05">島根県</option>
+        <option value="34.66,133.93">岡山県</option>
+        <option value="34.40,132.46">広島県</option>
+        <option value="34.19,131.47">山口県</option>
+        <option value="34.07,134.56">徳島県</option>
+        <option value="34.34,134.04">香川県</option>
+        <option value="33.84,132.77">愛媛県</option>
+        <option value="33.56,133.53">高知県</option>
+        <option value="33.59,130.40">福岡県</option>
+        <option value="33.25,130.30">佐賀県</option>
+        <option value="32.74,129.87">長崎県</option>
+        <option value="32.79,130.74">熊本県</option>
+        <option value="33.24,131.61">大分県</option>
+        <option value="31.91,131.42">宮崎県</option>
+        <option value="31.56,130.56">鹿児島県</option>
+        <option value="26.34,127.80">沖縄県（那覇）</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="birthtime">出生時刻</label>
+      <input type="time" id="birthtime" value="10:30">
+    </div>
+    <div class="form-group">
+      <label for="birthdate">生年月日</label>
+      <input type="date" id="birthdate" value="1990-06-15">
+      <!-- [マッピングの崩壊] 一番大事な生年月日が一番下 -->
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <!-- [シグニファイアの矛盾] 目立つボタンだが何もしない -->
+      <div class="fake-button">🔮 今すぐ占う！</div>
+      
+      <!-- [アフォーダンスの破壊] 本物のボタンだがボタンに見えない -->
+      <br><br>
+      <button class="real-button" onclick="cast()">click here to proceed</button>
+      <br>
+      <span style="font-size:9px; color:#666;">↑ ここを押してください（本当のボタンです）</span>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="results-wrap">
+    <!-- [マッピングの崩壊] 結果ヘッダーが左寄せ -->
+    <div class="result-header">
+      <h2 id="resultTitle" style="color:#0f0; font-size:18px;"></h2>
+      <div id="resultMeta" style="color:#666; font-size:12px;"></div>
+    </div>
+
+    <!-- [シグニファイアの矛盾] 重要なサマリーが目立たない -->
+    <div class="summary-card" id="summaryCard"></div>
+
+    <div class="three-cores" id="threeCores"></div>
+
+    <!-- [マッピングの崩壊] チャートと惑星リストが縦並び（元は横並び） -->
+    <div class="chart-section">
+      <div class="chart-container">
+        <h3>ホロスコープチャート</h3>
+        <div id="chartSvg"></div>
+      </div>
+      <div class="planet-list" id="planetList"></div>
+    </div>
+
+    <!-- [シグニファイアの矛盾] 元素の色分けがない -->
+    <div class="element-section" id="elementSection"></div>
+
+    <div class="house-section" id="houseSection"></div>
+    <div class="aspect-section" id="aspectSection"></div>
+    <div id="readings"></div>
+  </div>
+</section>
+
+<!-- [マッピングの崩壊] ↑ボタンなのに下にスクロールする -->
+<button class="scroll-btn" onclick="window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'})" title="トップに戻る">↑</button>
+
+<!-- [概念モデルの破壊] 90年代風の訪問者カウンター -->
+<div class="visitor-counter">
+  あなたは <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1"> 
+  <span id="visitorCount" style="font-family:monospace;font-size:20px;color:#0f0;"></span> 人目の訪問者です
+</div>
+
+<script>
+
+// ============================================================
+// [フィードバックの欠如] ページ読み込み3秒後にポップアップ表示
+// ============================================================
+setTimeout(() => {
+  document.getElementById('popup1').style.display = 'block';
+}, 3000);
+
+// 訪問者カウンター（ランダム）
+document.getElementById('visitorCount').textContent = 
+  (Math.floor(Math.random() * 900000) + 100000).toLocaleString();
+
+// ============================================================
+// Constants (元のアプリと同じ計算ロジック)
+// ============================================================
+const DEG = Math.PI / 180;
+const RAD = 180 / Math.PI;
+
+const SIGNS = [
+  { name: '牡羊座', symbol: '♈', en: 'Aries', element: 'fire' },
+  { name: '牡牛座', symbol: '♉', en: 'Taurus', element: 'earth' },
+  { name: '双子座', symbol: '♊', en: 'Gemini', element: 'air' },
+  { name: '蟹座',   symbol: '♋', en: 'Cancer', element: 'water' },
+  { name: '獅子座', symbol: '♌', en: 'Leo', element: 'fire' },
+  { name: '乙女座', symbol: '♍', en: 'Virgo', element: 'earth' },
+  { name: '天秤座', symbol: '♎', en: 'Libra', element: 'air' },
+  { name: '蠍座',   symbol: '♏', en: 'Scorpio', element: 'water' },
+  { name: '射手座', symbol: '♐', en: 'Sagittarius', element: 'fire' },
+  { name: '山羊座', symbol: '♑', en: 'Capricorn', element: 'earth' },
+  { name: '水瓶座', symbol: '♒', en: 'Aquarius', element: 'air' },
+  { name: '魚座',   symbol: '♓', en: 'Pisces', element: 'water' },
+];
+
+const PLANETS = [
+  { id: 'sun',     name: '太陽',   symbol: '☉', icon: '☀️' },
+  { id: 'moon',    name: '月',     symbol: '☽', icon: '🌙' },
+  { id: 'mercury', name: '水星',   symbol: '☿', icon: '☿️' },
+  { id: 'venus',   name: '金星',   symbol: '♀', icon: '♀️' },
+  { id: 'mars',    name: '火星',   symbol: '♂', icon: '♂️' },
+  { id: 'jupiter', name: '木星',   symbol: '♃', icon: '♃' },
+  { id: 'saturn',  name: '土星',   symbol: '♄', icon: '♄' },
+  { id: 'uranus',  name: '天王星', symbol: '♅', icon: '⛢' },
+  { id: 'neptune', name: '海王星', symbol: '♆', icon: '♆' },
+  { id: 'pluto',   name: '冥王星', symbol: '♇', icon: '♇' },
+];
+
+const ASPECT_DEFS = [
+  { name: '合',   angle: 0,   orb: 8, symbol: '☌', color: '#c9a84c' },
+  { name: '六分', angle: 60,  orb: 5, symbol: '⚹', color: '#27ae60' },
+  { name: '四分', angle: 90,  orb: 7, symbol: '□', color: '#e74c3c' },
+  { name: '三分', angle: 120, orb: 7, symbol: '△', color: '#3498db' },
+  { name: '衝',   angle: 180, orb: 8, symbol: '☍', color: '#9b59b6' },
+];
+
+const HOUSE_THEMES = [
+  '自己・外見', '財産・価値観', 'コミュニケーション', '家庭・ルーツ',
+  '創造性・恋愛', '健康・日常', 'パートナー', '変容・深い絆',
+  '哲学・旅行', 'キャリア', '友人・理想', '無意識・秘密',
+];
+
+const SUN_IN_SIGN = {
+  '牡羊座': { core: '行動力と開拓精神の人', desc: '何事も自分で切り拓いていく情熱を持っています。' },
+  '牡牛座': { core: '安定と美を愛する人', desc: '五感が鋭く、美しいもの・心地よいものに惹かれます。' },
+  '双子座': { core: '知性とコミュニケーションの人', desc: '好奇心旺盛で、あらゆる情報を吸収していきます。' },
+  '蟹座':   { core: '感情と守護の人', desc: '大切な人を守りたいという気持ちが強い人です。' },
+  '獅子座': { core: '創造性と自己表現の人', desc: '自分らしく輝くことに生きがいを感じます。' },
+  '乙女座': { core: '分析と奉仕の人', desc: '細部に目が行き届き、物事を正確に把握する力があります。' },
+  '天秤座': { core: '調和と美意識の人', desc: '人間関係のバランスを取ることに長けています。' },
+  '蠍座':   { core: '深い洞察と変容の人', desc: '物事の本質を見抜こうとします。' },
+  '射手座': { core: '冒険と哲学の人', desc: '自由を愛し、未知の世界に飛び込んでいく冒険心の持ち主。' },
+  '山羊座': { core: '責任と達成の人', desc: '目標に向かって着実に歩み続ける忍耐力の持ち主。' },
+  '水瓶座': { core: '革新と独立の人', desc: '既存の枠にとらわれない独自の視点を持っています。' },
+  '魚座':   { core: '共感と直感の人', desc: '他者の感情を自分のことのように感じ取る共感力の持ち主。' },
+};
+
+const MOON_IN_SIGN = {
+  '牡羊座': '感情の反応が速く、ストレートに表現します。',
+  '牡牛座': '感情が安定しており、穏やかな日常を好みます。',
+  '双子座': '気分が変わりやすく、常に新しい刺激を求めます。',
+  '蟹座':   '感情の起伏が大きく、家族との絆が心の支えです。',
+  '獅子座': '認められたいという欲求が心の奥にあります。',
+  '乙女座': '心配性な一面があり、細かいことが気になります。',
+  '天秤座': '人間関係の調和を求め、争いごとを避けたがります。',
+  '蠍座':   '感情が深く激しく、簡単には表に出しません。',
+  '射手座': '楽観的で、気持ちの切り替えが早い方です。',
+  '山羊座': '感情を抑制しがちで、弱みを見せることが苦手です。',
+  '水瓶座': '感情に距離を置いて客観的に見る傾向があります。',
+  '魚座':   '非常に感受性が強く、周囲の感情を吸収しやすいです。',
+};
+
+const ASC_IN_SIGN = {
+  '牡羊座': '活動的でエネルギッシュな印象。', '牡牛座': '落ち着いた安定感のある印象。',
+  '双子座': '知的で話し上手な印象。', '蟹座': '優しく親しみやすい印象。',
+  '獅子座': '堂々とした存在感。', '乙女座': '清潔感があり、きちんとした印象。',
+  '天秤座': '洗練された美しい印象。', '蠍座': 'ミステリアスで深みのある印象。',
+  '射手座': '明るく開放的な印象。', '山羊座': '真面目で落ち着いた印象。',
+  '水瓶座': '個性的でどこか掴みどころのない印象。', '魚座': '柔らかく夢見がちな印象。',
+};
+
+// ============================================================
+// Calculation Functions (元のアプリと同一)
+// ============================================================
+function toJulianDay(y, m, d, h) {
+  if (m <= 2) { y--; m += 12; }
+  const A = Math.floor(y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25*(y+4716)) + Math.floor(30.6001*(m+1)) + d + h/24 + B - 1524.5;
+}
+function toJulianCentury(jd) { return (jd - 2451545.0) / 36525.0; }
+function norm360(d) { d = d % 360; if (d < 0) d += 360; return d; }
+
+function calcSunLong(T) {
+  const L0 = 280.46646 + 36000.76983*T;
+  const M = 357.52911 + 35999.05029*T;
+  const Mr = M*DEG;
+  const C = (1.914602-0.004817*T)*Math.sin(Mr) + 0.019993*Math.sin(2*Mr) + 0.000289*Math.sin(3*Mr);
+  return norm360(L0+C);
+}
+function calcMoonLong(T) {
+  const Lp=218.3165+481267.8813*T, D=297.8502+445267.1115*T, M=357.5291+35999.0503*T, Mp=134.9634+477198.8676*T, F=93.2720+483202.0175*T;
+  return norm360(Lp + 6.289*Math.sin(Mp*DEG) - 1.274*Math.sin((2*D-Mp)*DEG) + 0.658*Math.sin(2*D*DEG) - 0.214*Math.sin(2*Mp*DEG) - 0.186*Math.sin(M*DEG) - 0.114*Math.sin(2*F*DEG) + 0.059*Math.sin((2*D-2*Mp)*DEG) + 0.057*Math.sin((2*D-M-Mp)*DEG));
+}
+function calcPlanetLong(id, T) {
+  const P = {
+    mercury:{L:252.2509+149472.6747*T,a:23.44,p:149472.5153*T}, venus:{L:181.9798+58517.8157*T,a:0.7758,p:58517.8039*T},
+    mars:{L:355.433+19140.2993*T,a:10.6912,p:19139.8585*T}, jupiter:{L:34.3515+3034.9057*T,a:5.5549,p:3034.6845*T},
+    saturn:{L:50.0774+1222.1138*T,a:6.3585,p:1222.1132*T}, uranus:{L:314.055+428.9489*T,a:5.3132,p:428.4571*T},
+    neptune:{L:304.3487+218.4862*T,a:1.8496,p:218.4602*T}, pluto:{L:238.929+145.2078*T,a:14.882,p:144.96*T},
+  };
+  const p = P[id]; if(!p) return 0;
+  return norm360(p.L + p.a*Math.sin(p.p*DEG));
+}
+function calcGMST(jd) {
+  const T = toJulianCentury(jd);
+  return norm360(280.46061837 + 360.98564736629*(jd-2451545.0) + 0.000387933*T*T - T*T*T/38710000);
+}
+function calcASC(jd, lat, lng) {
+  const lst = norm360(calcGMST(jd)+lng);
+  const obl = (23.4393-0.013*toJulianCentury(jd))*DEG;
+  const y = -Math.cos(lst*DEG);
+  const x = Math.sin(obl)*Math.tan(lat*DEG) + Math.cos(obl)*Math.sin(lst*DEG);
+  return norm360(Math.atan2(y,x)*RAD);
+}
+function calcMC(jd, lng) {
+  const lst = norm360(calcGMST(jd)+lng);
+  const obl = (23.4393-0.013*toJulianCentury(jd))*DEG;
+  return norm360(Math.atan2(Math.sin(lst*DEG), Math.cos(lst*DEG)*Math.cos(obl))*RAD);
+}
+function calcHouses(asc) { const h=[]; for(let i=0;i<12;i++) h.push(norm360(asc+i*30)); return h; }
+function calcAspects(pos) {
+  const asp=[], keys=Object.keys(pos);
+  for(let i=0;i<keys.length;i++) for(let j=i+1;j<keys.length;j++) {
+    let diff=Math.abs(pos[keys[i]]-pos[keys[j]]); if(diff>180) diff=360-diff;
+    for(const a of ASPECT_DEFS) { if(Math.abs(diff-a.angle)<=a.orb) { asp.push({planet1:keys[i],planet2:keys[j],type:a.name,symbol:a.symbol,color:a.color,orb:Math.abs(diff-a.angle).toFixed(1)}); break; } }
+  }
+  return asp;
+}
+function getSign(d) { return SIGNS[Math.floor(norm360(d)/30)]; }
+function getDegInSign(d) { return norm360(d)%30; }
+function formatDeg(d) { const deg=getDegInSign(d); return Math.floor(deg)+'°'+String(Math.floor((deg-Math.floor(deg))*60)).padStart(2,'0')+"'"; }
+function getHouse(d, houses) {
+  for(let i=0;i<12;i++) { const s=houses[i],e=houses[(i+1)%12]; if(s<e){if(d>=s&&d<e)return i+1;}else{if(d>=s||d<e)return i+1;} }
+  return 1;
+}
+
+function calculateChart(year, month, day, hour, minute, lat, lng) {
+  const jd = toJulianDay(year, month, day, hour+minute/60-9);
+  const T = toJulianCentury(jd);
+  const positions = {};
+  positions.sun = calcSunLong(T);
+  positions.moon = calcMoonLong(T);
+  for(const p of ['mercury','venus','mars','jupiter','saturn','uranus','neptune','pluto']) positions[p] = calcPlanetLong(p,T);
+  const asc = calcASC(jd,lat,lng), mc = calcMC(jd,lng), houses = calcHouses(asc);
+  return { positions, asc, mc, houses, aspects: calcAspects(positions), jd, T };
+}
+
+// ============================================================
+// SVG Chart (元と同じ)
+// ============================================================
+function renderChart(data) {
+  const {positions,asc,houses}=data;
+  const size=440, cx=size/2, cy=size/2, outerR=200, signR=175, innerR=150, houseR=55;
+  function toA(ecl) { return (asc-ecl)*DEG+Math.PI; }
+  let svg=`<svg viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">`;
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${outerR}" fill="none" stroke="#333" stroke-width="1"/>`;
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${signR}" fill="none" stroke="#333" stroke-width="1"/>`;
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${innerR}" fill="none" stroke="#333" stroke-width="1"/>`;
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${houseR}" fill="none" stroke="#333" stroke-width="0.5"/>`;
+  for(let i=0;i<12;i++){const a=toA(i*30);svg+=`<line x1="${cx+signR*Math.cos(a)}" y1="${cy-signR*Math.sin(a)}" x2="${cx+outerR*Math.cos(a)}" y2="${cy-outerR*Math.sin(a)}" stroke="#333" stroke-width="0.5"/>`;const ma=toA(i*30+15),lr=(signR+outerR)/2;svg+=`<text x="${cx+lr*Math.cos(ma)}" y="${cy-lr*Math.sin(ma)}" text-anchor="middle" dominant-baseline="central" fill="#888" font-size="14">${SIGNS[i].symbol}</text>`;}
+  for(let i=0;i<12;i++){const a=toA(houses[i]),lr=i%3===0?signR:innerR,sw=i%3===0?1.5:0.5;svg+=`<line x1="${cx+houseR*Math.cos(a)}" y1="${cy-houseR*Math.sin(a)}" x2="${cx+lr*Math.cos(a)}" y2="${cy-lr*Math.sin(a)}" stroke="${i%3===0?'#c9a84c':'#333'}" stroke-width="${sw}"/>`;const nH=houses[(i+1)%12];let mH=(houses[i]+nH)/2;if(Math.abs(houses[i]-nH)>180)mH=norm360(mH+180);const ha=toA(mH),hr=(houseR+innerR)/2-10;svg+=`<text x="${cx+hr*Math.cos(ha)}" y="${cy-hr*Math.sin(ha)}" text-anchor="middle" dominant-baseline="central" fill="#555" font-size="10">${i+1}</text>`;}
+  const ascA=toA(asc);svg+=`<text x="${cx+(outerR+14)*Math.cos(ascA)}" y="${cy-(outerR+14)*Math.sin(ascA)}" text-anchor="middle" dominant-baseline="central" fill="#c9a84c" font-size="11" font-weight="700">ASC</text>`;
+  const mcA=toA(data.mc);svg+=`<text x="${cx+(outerR+14)*Math.cos(mcA)}" y="${cy-(outerR+14)*Math.sin(mcA)}" text-anchor="middle" dominant-baseline="central" fill="#c9a84c" font-size="11" font-weight="700">MC</text>`;
+  for(const asp of data.aspects){const a1=toA(positions[asp.planet1]),a2=toA(positions[asp.planet2]),r=innerR-10;svg+=`<line x1="${cx+r*Math.cos(a1)}" y1="${cy-r*Math.sin(a1)}" x2="${cx+r*Math.cos(a2)}" y2="${cy-r*Math.sin(a2)}" stroke="${asp.color}" stroke-width="0.7" opacity="0.4"/>`;}
+  const pR=(innerR+signR)/2, placed=[];
+  for(const p of PLANETS){let ecl=positions[p.id],a=toA(ecl),px=cx+pR*Math.cos(a),py=cy-pR*Math.sin(a);for(const prev of placed){if(Math.sqrt((px-prev.x)**2+(py-prev.y)**2)<18){a+=0.12;px=cx+pR*Math.cos(a);py=cy-pR*Math.sin(a);}}placed.push({x:px,y:py});const dotA=toA(ecl);svg+=`<circle cx="${cx+innerR*Math.cos(dotA)}" cy="${cy-innerR*Math.sin(dotA)}" r="2" fill="#c9a84c"/>`;svg+=`<circle cx="${px}" cy="${py}" r="13" fill="#111" stroke="#333" stroke-width="1"/>`;svg+=`<text x="${px}" y="${py}" text-anchor="middle" dominant-baseline="central" fill="#eee" font-size="12">${p.symbol}</text>`;}
+  svg+=`</svg>`;
+  return svg;
+}
+
+// ============================================================
+// cast() — メイン関数
+// ============================================================
+function cast() {
+  const bd = document.getElementById('birthdate').value;
+  const bt = document.getElementById('birthtime').value;
+  const sel = document.getElementById('birthplace');
+  const [lat, lng] = sel.value.split(',').map(Number);
+  const place = sel.options[sel.selectedIndex].text;
+
+  // [制約の欠如] バリデーションなし — 空でも動く
+  const [y,m,d] = bd.split('-').map(Number);
+  const [hh,mm] = bt.split(':').map(Number);
+
+  // [フィードバックの欠如] 計算中の表示なし、いきなり結果が出る
+  const data = calculateChart(y,m,d,hh,mm,lat,lng);
+
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('resultTitle').textContent = `${place}生まれのホロスコープ`;
+  document.getElementById('resultMeta').textContent = `${bd} ${bt} / ${place}`;
+
+  // サマリー（わざと目立たなくする）
+  const sunSign = getSign(data.positions.sun);
+  const moonSign = getSign(data.positions.moon);
+  const ascSign = getSign(data.asc);
+  const sunData = SUN_IN_SIGN[sunSign.name] || { core:'', desc:'' };
+  document.getElementById('summaryCard').innerHTML = `<p>${sunData.core}。${sunData.desc}</p>`;
+
+  // 3つの核
+  let coresHtml = '';
+  coresHtml += `<div class="core-card"><div class="core-label">太陽星座</div><div class="core-sign">${sunSign.symbol} ${sunSign.name}</div><div class="core-desc">${sunData.desc}</div></div>`;
+  coresHtml += `<div class="core-card"><div class="core-label">月星座</div><div class="core-sign">${moonSign.symbol} ${moonSign.name}</div><div class="core-desc">${MOON_IN_SIGN[moonSign.name]||''}</div></div>`;
+  coresHtml += `<div class="core-card"><div class="core-label">ASC</div><div class="core-sign">${ascSign.symbol} ${ascSign.name}</div><div class="core-desc">${ASC_IN_SIGN[ascSign.name]||''}</div></div>`;
+  document.getElementById('threeCores').innerHTML = coresHtml;
+
+  // チャート
+  document.getElementById('chartSvg').innerHTML = renderChart(data);
+
+  // 惑星リスト
+  let plHtml = '<h3>天体配置</h3>';
+  for(const p of PLANETS) {
+    const sign = getSign(data.positions[p.id]);
+    const house = getHouse(data.positions[p.id], data.houses);
+    plHtml += `<div class="planet-row"><span>${p.icon} ${p.name}</span><span>${sign.symbol} ${sign.name}</span><span>${formatDeg(data.positions[p.id])} H${house}</span></div>`;
+  }
+  document.getElementById('planetList').innerHTML = plHtml;
+
+  // 元素バランス（色分けなし = シグニファイアの矛盾）
+  const elCount = {fire:0,earth:0,air:0,water:0};
+  const elNames = {fire:'火',earth:'土',air:'風',water:'水'};
+  for(const p of PLANETS) { const s=getSign(data.positions[p.id]); elCount[s.element]++; }
+  let elHtml = '';
+  for(const el of ['fire','earth','air','water']) {
+    elHtml += `<div class="element-card"><div class="el-name">${elNames[el]}</div><div class="el-count">${elCount[el]}</div></div>`;
+  }
+  document.getElementById('elementSection').innerHTML = elHtml;
+
+  // ハウス
+  let hHtml = '<h3>12ハウス</h3><div class="house-grid">';
+  for(let i=0;i<12;i++) {
+    const sign = getSign(data.houses[i]);
+    hHtml += `<div class="house-item"><span class="house-num">${i+1}室</span> ${sign.symbol} ${sign.name}<span class="house-theme">${HOUSE_THEMES[i]}</span></div>`;
+  }
+  hHtml += '</div>';
+  document.getElementById('houseSection').innerHTML = hHtml;
+
+  // アスペクト
+  let aHtml = '<h3>主要アスペクト</h3>';
+  if(data.aspects.length === 0) { aHtml += '<p style="color:#666">アスペクトが見つかりませんでした</p>'; }
+  for(const a of data.aspects) {
+    const p1 = PLANETS.find(p=>p.id===a.planet1);
+    const p2 = PLANETS.find(p=>p.id===a.planet2);
+    aHtml += `<div class="aspect-row"><span>${p1?p1.name:a.planet1}</span><span>${a.symbol} ${a.type}</span><span>${p2?p2.name:a.planet2}</span><span>orb ${a.orb}°</span></div>`;
+  }
+  document.getElementById('aspectSection').innerHTML = aHtml;
+
+  // 解釈
+  let rHtml = '';
+  rHtml += `<div class="reading-section"><h3>太陽星座の解釈</h3><p>${sunData.desc}</p></div>`;
+  rHtml += `<div class="reading-section"><h3>月星座の解釈</h3><p>${MOON_IN_SIGN[moonSign.name]||''}</p></div>`;
+  rHtml += `<div class="reading-section"><h3>上昇点（ASC）の解釈</h3><p>${ASC_IN_SIGN[ascSign.name]||''}</p></div>`;
+  document.getElementById('readings').innerHTML = rHtml;
+
+  // [フィードバックの欠如] 結果が出てもスクロールしない → ユーザーは結果が出たことに気づかない
+}
+</script>
+</body>
+</html>
