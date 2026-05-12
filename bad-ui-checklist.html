@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>講師用：ダメUI/UXチェックリスト</title>
+<style>
+:root {
+  --bg: #fafaf8;
+  --surface: #fff;
+  --border: #e5e5e0;
+  --text: #1a1a1a;
+  --dim: #888;
+  --accent: #c9a84c;
+  --af: #e74c3c;
+  --sig: #e67e22;
+  --map: #3498db;
+  --fb: #27ae60;
+  --con: #8e44ad;
+  --cm: #2c3e50;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.7;
+  padding: 32px 24px 80px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.subtitle {
+  font-size: 16px;
+  color: var(--dim);
+  margin-bottom: 32px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.stat-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+}
+.stat-chip .count { font-size: 18px; font-weight: 800; }
+
+/* Category sections */
+.category {
+  margin-bottom: 32px;
+}
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+.category-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.category-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+.category-question {
+  font-size: 14px;
+  color: var(--dim);
+  margin-left: auto;
+}
+
+/* Cards */
+.issue-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 12px;
+  align-items: start;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.issue-card:hover { background: #f5f5f0; }
+.issue-card.revealed .answer { display: block; }
+.issue-id {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: #ccc;
+  border-radius: 6px;
+  text-align: center;
+  padding: 4px 0;
+  line-height: 1.4;
+}
+.issue-text {
+  font-size: 16px;
+  line-height: 1.6;
+}
+.issue-location {
+  font-size: 13px;
+  color: var(--dim);
+  white-space: nowrap;
+}
+.answer {
+  display: none;
+  grid-column: 1 / -1;
+  padding: 12px 16px;
+  background: #f8f8f4;
+  border-radius: 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.6;
+  border-left: 3px solid;
+}
+
+/* Category colors */
+.cat-af .category-dot, .cat-af .issue-id { background: var(--af); }
+.cat-af .answer { border-color: var(--af); }
+.cat-sig .category-dot, .cat-sig .issue-id { background: var(--sig); }
+.cat-sig .answer { border-color: var(--sig); }
+.cat-map .category-dot, .cat-map .issue-id { background: var(--map); }
+.cat-map .answer { border-color: var(--map); }
+.cat-fb .category-dot, .cat-fb .issue-id { background: var(--fb); }
+.cat-fb .answer { border-color: var(--fb); }
+.cat-con .category-dot, .cat-con .issue-id { background: var(--con); }
+.cat-con .answer { border-color: var(--con); }
+.cat-cm .category-dot, .cat-cm .issue-id { background: var(--cm); }
+.cat-cm .answer { border-color: var(--cm); }
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.btn {
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn:hover { background: #f0f0ec; }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { opacity: 0.85; }
+
+/* How to use */
+.howto {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+.howto h2 {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.howto ol {
+  padding-left: 20px;
+  font-size: 16px;
+}
+.howto li { margin-bottom: 6px; }
+
+/* Note */
+.note {
+  background: #fff8e1;
+  border: 1px solid #ffe082;
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 32px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.note strong { color: #e65100; }
+
+@media (max-width: 640px) {
+  body { padding: 20px 16px 60px; }
+  h1 { font-size: 20px; }
+  .issue-card { grid-template-columns: 40px 1fr; }
+  .issue-location { grid-column: 2; white-space: normal; font-size: 12px; }
+  .category-question { display: none; }
+  .stats { gap: 8px; }
+  .stat-chip { font-size: 12px; padding: 4px 10px; }
+}
+</style>
+</head>
+<body>
+
+<h1>🔍 ダメUI/UXチェックリスト</h1>
+<p class="subtitle">講師用答え合わせ — <code>bad-ui-astrology.html</code> に仕込んだ27個の問題点</p>
+
+<div class="stats">
+  <span class="stat-chip" style="background:var(--af)"><span class="count">2</span> アフォーダンス</span>
+  <span class="stat-chip" style="background:var(--sig)"><span class="count">6</span> シグニファイア</span>
+  <span class="stat-chip" style="background:var(--map)"><span class="count">6</span> マッピング</span>
+  <span class="stat-chip" style="background:var(--fb)"><span class="count">5</span> フィードバック</span>
+  <span class="stat-chip" style="background:var(--con)"><span class="count">2</span> 制約</span>
+  <span class="stat-chip" style="background:var(--cm)"><span class="count">6</span> 概念モデル</span>
+</div>
+
+<div class="controls">
+  <button class="btn btn-primary" onclick="revealAll()">全部表示</button>
+  <button class="btn" onclick="hideAll()">全部隠す</button>
+</div>
+
+<div class="howto">
+  <h2>授業での使い方</h2>
+  <ol>
+    <li><code>index.html</code>（良いUI版）と <code>bad-ui-astrology.html</code>（ダメUI版）を両方開く</li>
+    <li>同じ生年月日を入力して結果を比較する</li>
+    <li>「ダメな方のどこがダメか、6要素で分類してみよう」</li>
+    <li>個人ワーク 5分 → ペア共有 3分 → 全体共有（くじ指名）</li>
+    <li>このリストで答え合わせ（カードをクリックで解説表示）</li>
+  </ol>
+</div>
+
+<!-- ===== アフォーダンス ===== -->
+<div class="category cat-af" id="affordance">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">アフォーダンス</div>
+    <div class="category-question">何ができそうな形か？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">A1</div>
+    <div class="issue-text">本物の実行ボタンがボタンに見えない</div>
+    <div class="issue-location">📍 フォーム下部</div>
+    <div class="answer">10px・灰色・点線枠・テキストカーソル・英語「click here to proceed」。ボタンの形をしていないので「押せる」と気づけない。良いUI版では大きなゴールドのボタンで「ホロスコープを作成する」と明示。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">A2</div>
+    <div class="issue-text">ポップアップの閉じるボタンが極小で見つけられない</div>
+    <div class="issue-location">📍 ポップアップ右上</div>
+    <div class="answer">8pxの「×」が背景と同化。閉じたいのに閉じ方がわからない。代わりに目立つ偽ボタン「🎁 特別鑑定を受ける」に誘導される構造。</div>
+  </div>
+</div>
+
+<!-- ===== シグニファイア ===== -->
+<div class="category cat-sig" id="signifier">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">シグニファイア</div>
+    <div class="category-question">ここを操作すると分かるか？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S1</div>
+    <div class="issue-text">「🔮 今すぐ占う！」が派手なボタンに見えるが押しても何も起きない</div>
+    <div class="issue-location">📍 フォーム下部</div>
+    <div class="answer">グラデーション・影・太字・大きいサイズ — ボタンのシグニファイアが全部揃っているのに、実際はただの &lt;div&gt;。「押せます」と嘘をついている。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S2</div>
+    <div class="issue-text">「🎁 特別鑑定を受ける」も派手なボタンだが何もしない</div>
+    <div class="issue-location">📍 ポップアップ内</div>
+    <div class="answer">S1と同じパターン。ポップアップ内で最も目立つ要素なのに機能しない。閉じるボタン（A2）は見えない。ユーザーは行き詰まる。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S3</div>
+    <div class="issue-text">「English / 中文 / 한국어」が青い下線付きでリンクに見えるがリンクではない</div>
+    <div class="issue-location">📍 ヘッダー</div>
+    <div class="answer">青色＋下線は「リンク」の世界共通シグニファイア。それを使っておいてリンクではない＝シグニファイアの嘘。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S4</div>
+    <div class="issue-text">元素バランス（火・土・風・水）が全部同じ灰色で色の意味がない</div>
+    <div class="issue-location">📍 結果の元素セクション</div>
+    <div class="answer">良いUI版では火=赤/土=緑/風=青/水=紫で色分け。色がシグニファイアとして「どの元素か」を伝えている。ダメ版は全部灰色なので数字を読まないと区別できない。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S5</div>
+    <div class="issue-text">3つの核カード（太陽/月/ASC）が赤・緑・青の枠だが、色に意味がない</div>
+    <div class="issue-location">📍 結果の3つの核</div>
+    <div class="answer">赤=太陽、緑=月、青=ASCという対応に根拠がない。良いUI版では統一デザインで「3つとも同じ重要度」と伝えている。意味のない色分けはノイズ。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">S6</div>
+    <div class="issue-text">「↑」ボタンのtitle属性が「トップに戻る」なのに下にスクロールする</div>
+    <div class="issue-location">📍 右下の固定ボタン</div>
+    <div class="answer">アイコン（↑）もツールチップ（トップに戻る）も「上に行く」と伝えているのに、実際は下に行く。ラベルと動作の矛盾＝シグニファイアの嘘。M5とも重なる。</div>
+  </div>
+</div>
+
+<!-- ===== マッピング ===== -->
+<div class="category cat-map" id="mapping">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">マッピング</div>
+    <div class="category-question">よくある場所にあるか？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M1</div>
+    <div class="issue-text">フォームの入力順序が「出生地→時刻→生年月日」</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">一番大事な生年月日が一番下。占いサイトで最初に聞かれるのは生年月日のはず。ユーザーの頭の中の順序（重要度順）と画面の順序が合っていない。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M2</div>
+    <div class="issue-text">「← まずこれから！」と出生地を最初に入力させる</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">M1の補強。ラベルで「まずこれから」と強調までしている。ユーザーの期待と逆の順序を押し付けている。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M3</div>
+    <div class="issue-text">結果ヘッダーが左寄せ</div>
+    <div class="issue-location">📍 結果表示</div>
+    <div class="answer">「◯◯生まれのホロスコープ」は結果の見出し。中央揃えが自然な位置なのに左に寄っていて、本文との区別がつきにくい。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M4</div>
+    <div class="issue-text">ホロスコープチャートと惑星リストが縦並び</div>
+    <div class="issue-location">📍 結果表示</div>
+    <div class="answer">良いUI版では横並び2カラムで、チャートを見ながら右の惑星リストを参照できる。縦並びだとチャートを見た後にスクロールしないとリストが見えない。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M5</div>
+    <div class="issue-text">「↑」ボタンを押すと下にスクロールする</div>
+    <div class="issue-location">📍 右下の固定ボタン</div>
+    <div class="answer">↑のアイコンは「上に行く」を意味するのが世界共通。動作が逆。S6とも重なるが、こちらは「アイコンと動作の対応関係（マッピング）が壊れている」観点。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">M6</div>
+    <div class="issue-text">スクロールするマーキーテキストで情報が読み取れない</div>
+    <div class="issue-location">📍 ヘッダー</div>
+    <div class="answer">テキストが左から右に流れ続けるので、読みたい部分を読みたいタイミングで読めない。情報の配置が時間軸に依存していて、ユーザーがコントロールできない。</div>
+  </div>
+</div>
+
+<!-- ===== フィードバック ===== -->
+<div class="category cat-fb" id="feedback">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">フィードバック</div>
+    <div class="category-question">操作したら反応があるか？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">F1</div>
+    <div class="issue-text">入力欄にフォーカスしても枠線の色が変わらない</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">CSSで <code>outline:none</code> にしている。「今どの欄を編集しているか」が視覚的にわからない。良いUI版ではゴールドの枠線に変わる。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">F2</div>
+    <div class="issue-text">本物のボタンにホバーしても見た目が変わらない</div>
+    <div class="issue-location">📍 フォーム下部</div>
+    <div class="answer">マウスを乗せても色も影も変わらない。「これは押せるものだ」という確認のフィードバックがない。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">F3</div>
+    <div class="issue-text">計算中の表示がない</div>
+    <div class="issue-location">📍 実行時</div>
+    <div class="answer">ボタンを押した後、ローディングスピナーも「計算中...」も出ない。いきなり結果が出る（しかもスクロールしないので気づかない＝F4）。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">F4</div>
+    <div class="issue-text">結果が出ても自動スクロールしない</div>
+    <div class="issue-location">📍 実行後</div>
+    <div class="answer">結果はフォームの下に表示されるが、画面はフォームのまま。ユーザーは「押したけど何も起きなかった？」と思う。良いUI版では結果位置まで自動スクロールすべき。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">F5</div>
+    <div class="issue-text">ページ読み込み3秒後に突然ポップアップが出る</div>
+    <div class="issue-location">📍 ページ全体</div>
+    <div class="answer">ユーザーが何も操作していないのにポップアップが出る。操作と無関係な反応＝フィードバックの逆（ノイズ）。</div>
+  </div>
+</div>
+
+<!-- ===== 制約 ===== -->
+<div class="category cat-con" id="constraint">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">制約</div>
+    <div class="category-question">できること・できないことが分かるか？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">C1</div>
+    <div class="issue-text">未来の日付（例: 2099年）でも計算が実行される</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">まだ生まれていない人のホロスコープを作っても意味がない。日付の上限を設定して「未来の日付は入力できない」とすべき。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">C2</div>
+    <div class="issue-text">生年月日を空にしても実行できる</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">必須項目が空のまま実行でき、結果がNaN（数値エラー）で壊れる。「生年月日を入力してください」とエラーメッセージを出すべき。</div>
+  </div>
+</div>
+
+<!-- ===== 概念モデル ===== -->
+<div class="category cat-cm" id="conceptual-model">
+  <div class="category-header">
+    <div class="category-dot"></div>
+    <div class="category-title">概念モデル</div>
+    <div class="category-question">頭の中で動きを予想できるか？</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM1</div>
+    <div class="issue-text">占星術アプリなのに怪しい無料サイト風のデザイン</div>
+    <div class="issue-location">📍 ページ全体</div>
+    <div class="answer">マゼンタ背景・虹色ヘッダー・Comic Sans・星マーク背景。「ちゃんとした占いサイト」の概念モデル（落ち着いた色・神秘的な雰囲気）と全く合わない。「なんか怪しい」の正体はこのズレ。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM2</div>
+    <div class="issue-text">「★☆ SUPER URANAI ☆★」というタイトル</div>
+    <div class="issue-location">📍 ヘッダー</div>
+    <div class="answer">占星術の信頼感・専門性と合わない。「Western Astrology」（良いUI版）と比べると、サービスの性格が全く違って見える。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM3</div>
+    <div class="issue-text">「100万人が体験した奇跡の占い！」のマーキーテキスト</div>
+    <div class="issue-location">📍 ヘッダー</div>
+    <div class="answer">煽り文句＋スクロール演出。ユーザーが過去に見てきた怪しい広告サイトのパターンと一致する＝「怪しいサイトのシグニファイア」が揃っている。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM4</div>
+    <div class="issue-text">「今日の1000人目の訪問者です！」ポップアップ</div>
+    <div class="issue-location">📍 ポップアップ</div>
+    <div class="answer">詐欺サイトの典型的な手口。ユーザーの脳が「これ前に見た危ないやつだ」と警告を出す。信頼を一瞬で失う。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM5</div>
+    <div class="issue-text">訪問者カウンター（毎回ランダムな数字）</div>
+    <div class="issue-location">📍 ページ最下部</div>
+    <div class="answer">リロードするたびに数字が変わる＝嘘。信頼性の破壊。「このサイトは嘘をつく」という概念モデルが形成される。</div>
+  </div>
+
+  <div class="issue-card" onclick="this.classList.toggle('revealed')">
+    <div class="issue-id">CM6</div>
+    <div class="issue-text">フォームの背景が紺色＋立体枠</div>
+    <div class="issue-location">📍 入力フォーム</div>
+    <div class="answer">古いOS風のデザインで占星術の雰囲気と合わない。ページ全体のマゼンタとも合わない。一貫性のなさが「誰もデザインを管理していない」印象を与える。</div>
+  </div>
+</div>
+
+<!-- ===== 補足 ===== -->
+<div class="note">
+  <strong>💡 「なんか怪しい」は6要素だけでは説明しきれない</strong><br>
+  学生が「全体的に怪しい」と感じたら、それは正しい直感。分解すると：<br>
+  ① 概念モデルのズレ（自分が知っている「ちゃんとしたサービス」の見た目と違う）<br>
+  ② 詐欺サイトのシグニファイアパターン一致（煽り文句・偽カウンター・派手な偽ボタン）<br>
+  ③ 色やフォントの一貫性欠如（誰もデザインを管理していない印象）<br><br>
+  これは<strong>信頼性（Credibility）</strong>や<strong>美的ユーザビリティ効果</strong>の領域。
+  「6要素で説明しきれないものもある。それが次回以降の話」と繋げるネタに使える。
+</div>
+
+<script>
+function revealAll() {
+  document.querySelectorAll('.issue-card').forEach(c => c.classList.add('revealed'));
+}
+function hideAll() {
+  document.querySelectorAll('.issue-card').forEach(c => c.classList.remove('revealed'));
+}
+</script>
+</body>
+</html>
